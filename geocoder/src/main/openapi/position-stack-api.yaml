@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  title: Geocoding PositionStack API
+  description: API for reverse geocoding - converting coordinates to location data
+  version: 1.0.0
+servers:
+  - url: http://api.positionstack.com/v1
+tags:
+  - name: Geocoding
+    externalDocs:
+      url: https://positionstack.com/documentation
+paths:
+  /reverse:
+    get:
+      tags:
+        - Geocoding
+      summary: Reverse Geocoding
+      description: Convert coordinates or IP address to location data
+      parameters:
+        - name: access_key
+          in: query
+          description: API access key
+          required: true
+          schema:
+            type: string
+        - name: query
+          in: query
+          description: Coordinates (latitude,longitude)
+          required: true
+          example: 40.7638435,-73.9729691
+          schema:
+            type: string
+        - name: country
+          in: query
+          description: Filter results by country code(s)
+          schema:
+            type: string
+        - name: region
+          in: query
+          description: Filter results by region
+          schema:
+            type: string
+        - name: language
+          in: query
+          description: Preferred language for response translation
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limit the number of results per query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReverseGeocodingResult'
+
+components:
+  schemas:
+      ReverseGeocodingResult:
+        type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/ReverseGeocodingData'
+
+      ReverseGeocodingData:
+        type: object
+        properties:
+          latitude:
+            type: number
+            example: 40.763841
+          longitude:
+            type: number
+            example: -73.972972
+          label:
+            type: string
+            example: "Apple Store, Manhattan, New York, NY, USA"
+          name:
+            type: string
+            example: "Apple Store"
+          distance:
+            type: number
+          type:
+            type: string
+            example: "venue"
+          number:
+            type: string
+            example: "767"
+          street:
+            type: string
+            example: "5th Avenue"
+          postal_code:
+            type: string
+            example: "10153"
+          confidence:
+            type: number
+            example: 1
+          region:
+            type: string
+            example: "New York"
+          region_code:
+            type: string
+            example: "NY"
+          administrative_area:
+            type: string
+            nullable: true
+          neighbourhood:
+            type: string
+            example: "Midtown East"
+          country:
+            type: string
+            example: "United States"
+          county:
+            type: string
+          locality:
+            type: string
+          country_code:
+            type: string
+            example: "US"
+          continent:
+            type: string
+          map_url:
+            type: string
+            example: "http://map.positionstack.com/40.763841,-73.972972"
+
+
