@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  iot-processor:
+    container_name: iot-processor
+    depends_on:
+      - mosquitto
+      - keycloak
+      - geocoder
+      - mongodb
+
+  iot-security:
+    container_name: iot-security
+    depends_on:
+      - mosquitto
+      - keycloak
+
+  geocoder:
+    container_name: geocoder
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0.16
+    container_name: mosquitto
+    expose:
+      - 1883
+
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    expose:
+      - 27017
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0.2
+    container_name: keycloak
+    depends_on:
+      - postgres
+    expose:
+      - 8080
+      - 8443
+
+  postgres:
+    image: docker.io/library/postgres:14
+    container_name: postgres-for-keycloak
+    expose:
+      - 5431

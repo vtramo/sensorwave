@@ -1,0 +1,117 @@
+version: "3.8"
+
+services:
+  iot-processor:
+    build:
+      dockerfile: src/main/docker/Dockerfile.jvm
+      context: iot-processor
+    ports:
+      - "8090:8090"
+    environment:
+      quarkus.http.port: 8090
+      quarkus.http.auth.permission.all-resources.policy: authenticated
+      keycloak.app.host: keycloak
+      keycloak.app.port: 8080
+      keycloak.app.realm: app
+      quarkus.oidc.auth-server-url: http://keycloak:8080/realms/app
+      quarkus.oidc.client.auth-server-url: http://keycloak:8080/realms/app
+      quarkus.mongodb.database: processor
+      quarkus.mongodb.connection-string: mongodb://mongodb:27017/processor
+      mqtt.broker.host: mosquitto
+      mqtt.broker.port: 1883
+      mqtt.client.id: iot-processor
+      mqtt.client.username: admin-user
+      mqtt.client.password: 123qweasd33
+      mqtt.client.maxInflightQueue: 500
+      mqtt.client.cleanSession: false
+      geocoder.service.client.host: geocoder
+      geocoder.service.client.port: 8091
+      quarkus.log.min-level: DEBUG
+      quarkus.log.category."io.quarkus.oidc".level: DEBUG
+
+  iot-security:
+    build:
+      dockerfile: src/main/docker/Dockerfile.jvm
+      context: iot-security
+    ports:
+      - "8092:8092"
+    environment:
+      quarkus.http.port: 8092
+      mqtt.broker.host: mosquitto
+      mqtt.broker.port: 1883
+      quarkus.oidc.auth-server-url: http://keycloak:8080/realms/app
+      quarkus.oidc.client.auth-server-url: http://keycloak:8080/realms/app
+      QUARKUS_OIDC_CLIENT_ID: iot-security
+      mqtt.client.id: iot-security
+      mqtt.client.username: admin-user
+      mqtt.client.password: 123qweasd33
+      mqtt.client.maxInflightQueue: 500
+      mqtt.client.cleanSession: false
+      keycloak.app.admin-cli.id: admin-cli
+      keycloak.app.admin-cli.secret: sO1nByLT9BKXaSZN3aIkG2sOGwJgiExF
+      keycloak.app.host: keycloak
+      keycloak.app.port: 8080
+      keycloak.app.realm: app
+
+  geocoder:
+    build:
+      dockerfile: src/main/docker/Dockerfile.jvm
+      context: geocoder
+    environment:
+      quarkus.http.port: 8091
+      api.positionstack.access-key: 6ba5121932055a90d8c8e7cccce1d550
+
+  mosquitto:
+    ports:
+      - "1884:1883"
+    volumes:
+      - "./mosquitto/log:/mosquitto/log"
+      - "./mosquitto/config:/mosquitto/config"
+
+  mongodb:
+    ports:
+      - "27018:27017"
+
+  keycloak:
+    ports:
+      - "8093:8080"
+    command:
+      - start-dev
+      - --import-realm
+      - --hostname-url=http://keycloak:8080
+    volumes:
+      - "./keycloak/app-realm.json:/opt/keycloak/data/import/app-realm.json:Z"
+      - "./keycloak/master-realm.json:/opt/keycloak/data/import/master-realm.json:Z"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+
+  postgres:
+    ports:
+      - "5300:5431"
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+
+  management-center:
+    image: cedalo/management-center:2
+    container_name: mosquitto-management-center
+    ports:
+      - "8088:8088"
+    depends_on:
+      - mosquitto
+    environment:
+      CEDALO_MC_BROKER_ID: mosquitto
+      CEDALO_MC_BROKER_NAME: Mosquitto
+      CEDALO_MC_BROKER_URL: mqtt://mosquitto:1883
+      CEDALO_MC_BROKER_USERNAME: admin-user
+      CEDALO_MC_BROKER_PASSWORD: 123qweasd33
+      CEDALO_MC_USERNAME: dev
+      CEDALO_MC_PASSWORD: dev
+      CEDALO_MC_PROXY_HOST: localhost
