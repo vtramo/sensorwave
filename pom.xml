@@ -8,7 +8,7 @@
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
-  <name>room-map-iot</name>
+  <name>sensorwave</name>
 
   <modules>
     <module>iot-processor</module>
