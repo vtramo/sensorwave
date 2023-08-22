@@ -1,0 +1,260 @@
+openapi: 3.0.2
+
+info:
+  title: Keycloak Admin REST API
+  description: This is a REST API reference for the Keycloak Admin REST API.
+  version: "1"
+
+paths:
+  /realms/{realm}/protocol/openid-connect/token:
+    post:
+      operationId: generateClientAccessToken
+      tags:
+        - Keycloak Client Access Token
+      summary: Generate an Access Token for a Client
+      parameters:
+        - in: path
+          name: realm
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+      responses:
+        2XX:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientAccessToken'
+        4XX:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/realms/{realm}/users:
+    post:
+      operationId: createUser
+      tags:
+        - Keycloak Users
+      summary: Create a new user   Username must be unique.
+      parameters:
+        - in: path
+          name: realm
+          description: realm name (not id!)
+          required: true
+          schema:
+            type: string
+          style: simple
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRepresentation'
+        required: true
+      responses:
+        2XX:
+          description: success
+
+  /admin/realms/{realm}/users/{id}:
+    delete:
+      operationId: deleteUserById
+      tags:
+        - Keycloak Users
+      summary: Delete the user
+      parameters:
+        - in: path
+          name: realm
+          description: realm name (not id!)
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          description: User id
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        2XX:
+          description: success
+
+components:
+  securitySchemes:
+    access_token:
+      type: http
+      scheme: bearer
+      bearerFormat: null
+
+  schemas:
+    ClientAccessToken:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expires_in:
+          type: integer
+        refresh_expires_in:
+          type: integer
+        refresh_token:
+          type: string
+        token_type:
+          type: string
+        not_before_policy:
+          type: integer
+        session_state:
+          type: string
+        scope:
+          type: string
+    CredentialRepresentation:
+      type: object
+      properties:
+        createdDate:
+          type: integer
+          format: int64
+        credentialData:
+          type: string
+        id:
+          type: string
+        priority:
+          type: integer
+          format: int32
+        secretData:
+          type: string
+        temporary:
+          type: boolean
+        type:
+          type: string
+        userLabel:
+          type: string
+        value:
+          type: string
+    FederatedIdentityRepresentation:
+      type: object
+      properties:
+        identityProvider:
+          type: string
+        userId:
+          type: string
+        userName:
+          type: string
+    UserConsentRepresentation:
+      type: object
+      properties:
+        clientId:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        grantedClientScopes:
+          type: array
+          items:
+            type: string
+        lastUpdatedDate:
+          type: integer
+          format: int64
+    UserRepresentation:
+      type: object
+      properties:
+        access:
+          type: object
+          additionalProperties: true
+        attributes:
+          type: object
+          additionalProperties: true
+        clientConsents:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsentRepresentation'
+        clientRoles:
+          type: object
+          additionalProperties: true
+        createdTimestamp:
+          type: integer
+          format: int64
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialRepresentation'
+        disableableCredentialTypes:
+          type: array
+          items:
+            type: string
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        enabled:
+          type: boolean
+        federatedIdentities:
+          type: array
+          items:
+            $ref: '#/components/schemas/FederatedIdentityRepresentation'
+        federationLink:
+          type: string
+        firstName:
+          type: string
+        groups:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        lastName:
+          type: string
+        notBefore:
+          type: integer
+          format: int32
+        origin:
+          type: string
+        realmRoles:
+          type: array
+          items:
+            type: string
+        requiredActions:
+          type: array
+          items:
+            type: string
+        self:
+          type: string
+        serviceAccountClientId:
+          type: string
+        username:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
+
+security:
+  - access_token: []
+
+externalDocs:
+  description: Schema source code
+  url: https://github.com/keycloak/keycloak/tree/6.0.1/core/src/main/java/org/keycloak/representations
