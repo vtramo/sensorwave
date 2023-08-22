@@ -1,0 +1,55 @@
+openapi: 3.0.3
+
+info:
+  title: IoT Security API
+  description: IoT Security API
+  version: 1.0.0
+
+servers:
+  - url: "localhost:32778"
+
+paths:
+  /users/register:
+    post:
+      operationId: registerUser
+      tags:
+        - Users
+      summary: Register a new user in the application
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        4XX:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+        code:
+          type: integer
+        message:
+          type: string
