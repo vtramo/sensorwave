@@ -1,0 +1,14 @@
+{
+  "connections": [
+    {
+      "id": "mosquitto-2",
+      "name": "Mosquitto 2.0 Instance",
+      "url": "mqtt://localhost:1883",
+      "credentials": {
+        "username": "admin-user",
+        "password": "123qweasd33"
+      }
+    }
+  ],
+  "plugins": []
+}

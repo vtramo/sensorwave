@@ -1,0 +1,83 @@
+{
+	"defaultACLAccess":	{
+		"publishClientSend":	false,
+		"publishClientReceive":	true,
+		"subscribe":	false,
+		"unsubscribe":	true
+	},
+	"clients":	[{
+			"username":	"admin-user",
+			"textname":	"Dynsec admin user",
+			"roles":	[{
+					"rolename":	"admin"
+				}],
+			"password":	"WSGSmOwsn02MsJX8xI3tUuyTDHJR18cqCCxESkwR/wyanfqeAl50ZRtQ05Q3UrxUPMm7CrcTXGfM27Bf8J2s2Q==",
+			"salt":	"dyDhd5tNxB9WIU3O",
+			"iterations":	101
+		}, {
+			"username":	"vtramo",
+			"roles":	[],
+			"password":	"Dy4LPouNGLfi4sxwiIOcHLzloZ34O2Cq4AZ0LW3yA60Oj1FLi1XQdSopkrLpmAKsQ2I5T9YAqbMeTETNxxo+lA==",
+			"salt":	"J+xsrMIUvpEyvAEE",
+			"iterations":	101
+		}, {
+			"username":	"vtramo2",
+			"clientid":	"vtramo2",
+			"roles":	[],
+			"password":	"FuFMYOXjcFnCs4wSmt7SGynS3LzFKJ+Y316ReFpbXlc/EJLmXZKNABmXht+RoNmCOSCkG7h4nw3lAlQYm0Y32g==",
+			"salt":	"kuYHF5S+QunVrtwV",
+			"iterations":	101
+		}, {
+			"username":	"vtramo3",
+			"clientid":	"vtramo3",
+			"roles":	[],
+			"password":	"HcsiQev0pLWwzSRkLAo6oeL/UOSQSjkDktYFR2sfTO5N6KJuzDqTCxXjW/O0uhos8c3bNXs5poEzkM6bMZ3zMw==",
+			"salt":	"d63YQ62dTXtNXE5j",
+			"iterations":	101
+		}],
+	"groups":	[],
+	"roles":	[{
+			"rolename":	"admin",
+			"acls":	[{
+					"acltype":	"publishClientSend",
+					"topic":	"$CONTROL/dynamic-security/#",
+					"priority":	0,
+					"allow":	true
+				}, {
+					"acltype":	"publishClientReceive",
+					"topic":	"$CONTROL/dynamic-security/#",
+					"priority":	0,
+					"allow":	true
+				}, {
+					"acltype":	"publishClientReceive",
+					"topic":	"$SYS/#",
+					"priority":	0,
+					"allow":	true
+				}, {
+					"acltype":	"publishClientReceive",
+					"topic":	"#",
+					"priority":	0,
+					"allow":	true
+				}, {
+					"acltype":	"subscribePattern",
+					"topic":	"$CONTROL/dynamic-security/#",
+					"priority":	0,
+					"allow":	true
+				}, {
+					"acltype":	"subscribePattern",
+					"topic":	"$SYS/#",
+					"priority":	0,
+					"allow":	true
+				}, {
+					"acltype":	"subscribePattern",
+					"topic":	"#",
+					"priority":	0,
+					"allow":	true
+				}, {
+					"acltype":	"unsubscribePattern",
+					"topic":	"#",
+					"priority":	0,
+					"allow":	true
+				}]
+		}]
+}
