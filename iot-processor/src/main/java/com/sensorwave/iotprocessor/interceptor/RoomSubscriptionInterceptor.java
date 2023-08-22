@@ -1,4 +1,4 @@
-package com.sensorwave.iotsecurity.interceptor;
+package com.sensorwave.iotprocessor.interceptor;
 
 import io.quarkus.logging.Log;
 import jakarta.annotation.Priority;

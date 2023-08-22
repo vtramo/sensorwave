@@ -1,4 +1,4 @@
-package com.sensorwave.iotsecurity.clients;
+package com.sensorwave.iotprocessor.clients;
 
 
 public record Position(double latitude, double longitude) {

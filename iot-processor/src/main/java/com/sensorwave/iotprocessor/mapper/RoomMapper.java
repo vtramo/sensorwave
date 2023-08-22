@@ -1,6 +1,6 @@
-package com.sensorwave.iotsecurity.mapper;
+package com.sensorwave.iotprocessor.mapper;
 
-import com.sensorwave.iotsecurity.entity.RoomEntity;
+import com.sensorwave.iotprocessor.entity.RoomEntity;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

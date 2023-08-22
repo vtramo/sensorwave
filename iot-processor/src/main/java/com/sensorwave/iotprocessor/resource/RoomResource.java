@@ -1,11 +1,11 @@
-package com.sensorwave.iotsecurity.resource;
+package com.sensorwave.iotprocessor.resource;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.sensorwave.iotsecurity.model.Cat;
-import com.sensorwave.iotsecurity.model.ErrorStatus;
-import com.sensorwave.iotsecurity.model.Message;
-import com.sensorwave.iotsecurity.service.RoomService;
+import com.sensorwave.iotprocessor.model.Cat;
+import com.sensorwave.iotprocessor.model.ErrorStatus;
+import com.sensorwave.iotprocessor.model.Message;
+import com.sensorwave.iotprocessor.service.RoomService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;

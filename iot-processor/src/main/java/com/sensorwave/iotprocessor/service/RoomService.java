@@ -1,10 +1,10 @@
-package com.sensorwave.iotsecurity.service;
+package com.sensorwave.iotprocessor.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.SecurityContext;
-import com.sensorwave.iotsecurity.entity.RoomEntity;
-import com.sensorwave.iotsecurity.mapper.RoomMapper;
+import com.sensorwave.iotprocessor.entity.RoomEntity;
+import com.sensorwave.iotprocessor.mapper.RoomMapper;
 import org.openapi.quarkus.iot_processor_api_yaml.model.Room;
 
 import java.security.Principal;

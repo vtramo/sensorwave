@@ -1,4 +1,4 @@
-package com.sensorwave.iotsecurity.config;
+package com.sensorwave.iotprocessor.config;
 
 import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttClient;

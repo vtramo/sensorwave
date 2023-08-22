@@ -1,4 +1,4 @@
-package com.sensorwave.iotsecurity.clients;
+package com.sensorwave.iotprocessor.clients;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

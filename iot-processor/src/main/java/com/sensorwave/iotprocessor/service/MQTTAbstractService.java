@@ -1,4 +1,4 @@
-package com.sensorwave.iotsecurity.service;
+package com.sensorwave.iotprocessor.service;
 
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
@@ -7,7 +7,7 @@ import io.vertx.mqtt.messages.MqttConnAckMessage;
 import io.vertx.mqtt.messages.MqttPublishMessage;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import com.sensorwave.iotsecurity.config.MQTTBrokerConfig;
+import com.sensorwave.iotprocessor.config.MQTTBrokerConfig;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

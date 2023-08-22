@@ -1,4 +1,4 @@
-package com.sensorwave.iotsecurity.interceptor;
+package com.sensorwave.iotprocessor.interceptor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
