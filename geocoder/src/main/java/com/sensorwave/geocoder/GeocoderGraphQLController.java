@@ -1,4 +1,4 @@
-package com.sensorwave.iotsecurity;
+package com.sensorwave.geocoder;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
