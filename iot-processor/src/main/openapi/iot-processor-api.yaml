@@ -1,0 +1,88 @@
+openapi: 3.0.3
+
+info:
+  title: IoT Processor REST API
+  description: IoT Processor REST API
+  version: 1.0.0
+
+servers:
+  - url: 'http'
+
+paths:
+  /rooms:
+    post:
+      operationId: createRoom
+      tags:
+        - Rooms
+      summary: Create a room
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        201:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        4XX:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /rooms/{roomOwnerUsername}:
+    get:
+      operationId: getRoomsByOwnerUsername
+      tags:
+        - Rooms
+      summary: Get rooms by owner username
+      parameters:
+        - in: path
+          name: roomOwnerUsername
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+        4XX:
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          #readOnly: true
+        roomOwnerUsername:
+          type: string
+          #readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation date
+          #readOnly: true
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+        code:
+          type: integer
+        message:
+          type: string
