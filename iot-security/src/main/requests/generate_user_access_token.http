@@ -1,0 +1,9 @@
+POST http://localhost:8093/realms/app/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = ext-client &
+grant_type = password &
+client_secret = 28l5hqqBmi84WUQTD4XX0ABLrMhsReQy &
+username = vtramo3 &
+password = ciao &
+scope = openid
