@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: geocoder
+  name: geocoder
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: geocoder
+  template:
+    metadata:
+      labels:
+        app: geocoder
+    spec:
+      containers:
+      - name: geocoder
+        image: localhost:5000/sensorwave/geocoder:latest
+        ports:
+          - containerPort: 8091
+            name: http
+        envFrom:
+          - configMapRef:
+              name: geocoder-configmap
+          - secretRef:
+              name: geocoder-secrets
+        readinessProbe:
+          httpGet:
+            port: http
+            path: /q/health/ready
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /q/health/live

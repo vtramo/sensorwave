@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: geocoder-configmap
+  labels:
+    app: geocoder
+data:
+  QUARKUS_HTTP_PORT: "8091"
+  API_POSITIONSTACK_URL: "http://positionstack"
+  API_POSITIONSTACK_ACCESS_KEY: "6ba5121932055a90d8c8e7cccce1d550"
+
