@@ -5,6 +5,7 @@ import com.sensorwave.iotprocessor.clients.ReverseGeocodingResult;
 import com.sensorwave.iotprocessor.config.GeocoderServiceClientConfig;
 import com.sensorwave.iotprocessor.entity.RoomEntity;
 import com.sensorwave.iotprocessor.interceptor.LoggedRoomSubscription;
+import com.sensorwave.iotprocessor.service.exceptions.InvalidTopicNameException;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.quarkus.logging.Log;
 import io.smallrye.graphql.client.GraphQLClient;
