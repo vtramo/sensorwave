@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-kc-configmap
+  labels:
+    app: keycloak
+data:
+  POSTGRES_DB: "keycloak"
+  POSTGRES_USER: "keycloak"
+  POSTGRES_PASSWORD: "keycloak"
+  

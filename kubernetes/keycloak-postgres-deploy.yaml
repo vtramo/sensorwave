@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: keycloak-postgres
+  name: keycloak-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-postgres
+  template:
+    metadata:
+      labels:
+        app: keycloak-postgres
+    spec:
+      volumes:
+        - name: postgres-kc-data
+          persistentVolumeClaim:
+            claimName: postgres-kc-data
+      containers:
+      - image: docker.io/library/postgres:14
+        name: postgres
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgres-kc-data
+        ports:
+          - containerPort: 5432
+            protocol: TCP
+        envFrom:
+          - configMapRef:
+              name: postgres-kc-configmap

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-configmap
+  labels:
+    app: keycloak
+data:
+  KEYCLOAK_ADMIN: "admin"
+  KEYCLOAK_ADMIN_PASSWORD: "admin"
+  KC_PROXY: "edge"
+  DB_VENDOR: "POSTGRES"
+  DB_ADDR: "postgres"
+  DB_DATABASE: "keycloak"
+  DB_USER: "keycloak"
+  DB_PASSWORD: "password"

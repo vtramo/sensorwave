@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-kc-data
+  labels:
+    app: keycloak
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+    - ReadWriteMany
+  hostPath:
+    path: /keycloak/postgres-data
+    type: Directory

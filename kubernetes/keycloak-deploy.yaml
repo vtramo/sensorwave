@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: keycloak
+  name: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      volumes:
+        - name: keycloak-config-volume
+          hostPath:
+            path: /keycloak
+            type: Directory
+      initContainers:
+        - name: init-postgres
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup postgres-keycloak.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for postgres; sleep 2; done"]
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:21.0.2
+        args:
+          - start-dev
+          - --import-realm
+          - --hostname-url=http://keycloak:8080
+          - --health-enabled=true
+        ports:
+        - containerPort: 8080
+          name: http
+        envFrom:
+          - configMapRef:
+              name: keycloak-configmap
+        volumeMounts:
+          - mountPath: /opt/keycloak/data/import
+            name: keycloak-config-volume
+            readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: http
