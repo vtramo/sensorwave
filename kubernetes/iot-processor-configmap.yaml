@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iot-processor-configmap
+  labels:
+    app: iot-processor
+data:
+  QUARKUS_HTTP_PORT: "8090"
+  QUARKUS_HTTP_ROOT_PATH: "/api/iot-processor"
+  QUARKUS_SMALLRYE_HEALTH_READINESS_PATH: "/api/iot-processor/q/health/ready"
+  QUARKUS_SMALLRYE_HEALTH_LIVENESS_PATH: "/api/iot-processor/q/health/live"
+  QUARKUS_HTTP_AUTH_PERMISSION_PUBLIC_PATHS: "/q/*,/api/iot-processor/q/*"
+  QUARKUS_HTTP_AUTH_PERMISSION_PUBLIC_POLICY: "permit"
+  QUARKUS_HTTP_AUTH_PERMISSION_ALL_RESOURCES_PATHS: "/api/iot-processor/rooms/*"
+  QUARKUS_HTTP_AUTH_PERMISSION_ALL_RESOURCES_POLICY: "authenticated"
+  QUARKUS.MONGODB.CONNECTION-STRING: "mongodb://mongodb:27017/"
+  QUARKUS_LIQUIBASE_MONGODB_CLEAN_AT_START: "true"
+  KEYCLOAK_APP_HOST: "keycloak"
+  KEYCLOAK_APP_PORT: "8080"
+  KEYCLOAK_APP_REALM: "app"
+  QUARKUS_MONGODB_DATABASE: "processor"
+  QUARKUS_MONGODB_CONNECTION_STRING: "mongodb://mongodb:27017/processor"
+  MQTT_BROKER_HOST: "mosquitto"
+  MQTT_BROKER_PORT: "1883"
+  MQTT_CLIENT_ID: "iot-processor"
+  MQTT_CLIENT_USERNAME: "admin-user"
+  MQTT_CLIENT_PASSWORD: "123qweasd33"
+  MQTT_CLIENT_MAX-INFLIGHT-QUEUE: "500"
+  MQTT_CLIENT_CLEAN-SESSION: "false"
+  GEOCODER_SERVICE_CLIENT_HOST: "geocoder"
+  GEOCODER_SERVICE_CLIENT_PORT: "8091"
+  QUARKUS_LOG_MIN_LEVEL: "DEBUG"
+  QUARKUS_LOG_CATEGORY_IO_QUARKUS_OIDC_LEVEL: "DEBUG"
+
+  

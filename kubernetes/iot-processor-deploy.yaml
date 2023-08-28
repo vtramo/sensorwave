@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: iot-processor
+  name: iot-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iot-processor
+  template:
+    metadata:
+      labels:
+        app: iot-processor
+    spec:
+      initContainers:
+        - name: init-mosquitto-waiter
+          image: busybox:1.28
+          command: [ 'sh', '-c', "until nslookup mosquitto.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mqtt broker; sleep 2; done" ]
+        - name: init-keycloak-waiter
+          image: busybox:1.28
+          command: [ 'sh', '-c', "until nslookup keycloak.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mqtt broker; sleep 2; done" ]
+      containers:
+      - name: iot-processor
+        image: localhost:5000/sensorwave/iot-processor:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8090
+            name: http
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MQTT_CLIENT_ID
+            value: "$(POD_NAME)"
+        envFrom:
+          - configMapRef:
+              name: iot-processor-configmap
+        readinessProbe:
+          httpGet:
+            port: http
+            path: /api/iot-processor/q/health/ready
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /api/iot-processor/q/health/live
