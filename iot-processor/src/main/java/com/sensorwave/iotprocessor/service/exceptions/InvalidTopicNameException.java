@@ -1,4 +1,4 @@
-package com.sensorwave.iotprocessor.service;
+package com.sensorwave.iotprocessor.service.exceptions;
 
 public class InvalidTopicNameException extends RuntimeException {
 
