@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mosquitto
+  name: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      volumes:
+        - name: mosquitto-config-volume
+          hostPath:
+            path: /mosquitto
+            type: Directory
+      containers:
+      - image: eclipse-mosquitto:2.0.16
+        name: eclipse-mosquitto
+        volumeMounts:
+          - mountPath: /mosquitto/config
+            name: mosquitto-config-volume
+            subPath: ./config
+          - mountPath: /mosquitto/log
+            name: mosquitto-config-volume
+            subPath: ./log
+#        readinessProbe:
+#          exec:
+#            command:
+#              - /bin/sh
+#              - -c
+#              - /usr/bin/mosquitto_pub -p "1883" -n -t 'Healthcheck!'
+#        livenessProbe:
+#          exec:
+#            command:
+#              - /bin/sh
+#              - -c
+#              - /usr/bin/mosquitto_pub -p "1883" -n -t 'Healthcheck!'

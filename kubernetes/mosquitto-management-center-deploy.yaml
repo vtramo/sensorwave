@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto-management-center
+  labels:
+    app: mosquitto-management-center
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto-management-center
+  template:
+    metadata:
+      name: mosquitto-management-center
+      labels:
+        app: mosquitto-management-center
+    spec:
+      initContainers:
+        - name: init-postgres
+          image: busybox:1.28
+          command: [ 'sh', '-c', "until nslookup mosquitto.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mosquitto; sleep 2; done" ]
+      containers:
+        - name: mosquitto-management-center
+          image: cedalo/management-center:2
+          ports:
+            - containerPort: 8088
+              name: http
+          envFrom:
+            - configMapRef:
+                name: mosquitto-management-center-configmap
+      restartPolicy: Always

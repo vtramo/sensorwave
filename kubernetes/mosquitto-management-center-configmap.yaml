@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-management-center-configmap
+data:
+  CEDALO_MC_BROKER_ID: "mosquitto"
+  CEDALO_MC_BROKER_NAME: "Mosquitto"
+  CEDALO_MC_BROKER_URL: "mqtt://mosquitto:1883"
+  CEDALO_MC_BROKER_USERNAME: "admin-user"
+  CEDALO_MC_BROKER_PASSWORD: "123qweasd33"
+  CEDALO_MC_USERNAME: "dev"
+  CEDALO_MC_PASSWORD: "dev"
+  CEDALO_MC_PROXY_HOST: "localhost"
+  
