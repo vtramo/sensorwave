@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sensorwave-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api/iot-security
+            pathType: Prefix
+            backend:
+              service:
+                name: iot-security
+                port:
+                  name: http
+          - path: /api/iot-processor
+            pathType: Prefix
+            backend:
+              service:
+                name: iot-processor
+                port:
+                  name: http
+          - path: /realms/app/protocol/openid-connect/token
+            pathType: Exact
+            backend:
+              service:
+                name: keycloak
+                port:
+                  name: http
