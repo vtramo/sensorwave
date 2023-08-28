@@ -13,8 +13,6 @@ services:
       keycloak.app.host: keycloak
       keycloak.app.port: 8080
       keycloak.app.realm: app
-      quarkus.oidc.auth-server-url: http://keycloak:8080/realms/app
-      quarkus.oidc.client.auth-server-url: http://keycloak:8080/realms/app
       quarkus.mongodb.database: processor
       quarkus.mongodb.connection-string: mongodb://mongodb:27017/processor
       mqtt.broker.host: mosquitto
@@ -39,9 +37,6 @@ services:
       quarkus.http.port: 8092
       mqtt.broker.host: mosquitto
       mqtt.broker.port: 1883
-      quarkus.oidc.auth-server-url: http://keycloak:8080/realms/app
-      quarkus.oidc.client.auth-server-url: http://keycloak:8080/realms/app
-      QUARKUS_OIDC_CLIENT_ID: iot-security
       mqtt.client.id: iot-security
       mqtt.client.username: admin-user
       mqtt.client.password: 123qweasd33
@@ -52,6 +47,8 @@ services:
       keycloak.app.host: keycloak
       keycloak.app.port: 8080
       keycloak.app.realm: app
+      quarkus.log.min-level: DEBUG
+      quarkus.log.category."io.quarkus.oidc".level: DEBUG
 
   geocoder:
     build:
@@ -59,6 +56,7 @@ services:
       context: geocoder
     environment:
       quarkus.http.port: 8091
+      api.positionstack.url: http://api.positionstack.com/v1
       api.positionstack.access-key: 6ba5121932055a90d8c8e7cccce1d550
 
   mosquitto:
@@ -75,6 +73,7 @@ services:
   keycloak:
     ports:
       - "8093:8080"
+      - "8443:8443"
     command:
       - start-dev
       - --import-realm
@@ -93,13 +92,13 @@ services:
 
   postgres:
     ports:
-      - "5300:5431"
+      - "5300:5432"
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: keycloak
 
-  management-center:
+  mosquitto-management-center:
     image: cedalo/management-center:2
     container_name: mosquitto-management-center
     ports:
