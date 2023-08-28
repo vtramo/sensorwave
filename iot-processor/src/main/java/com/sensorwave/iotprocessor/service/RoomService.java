@@ -1,14 +1,17 @@
 package com.sensorwave.iotprocessor.service;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.SecurityContext;
 import com.sensorwave.iotprocessor.entity.RoomEntity;
 import com.sensorwave.iotprocessor.mapper.RoomMapper;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.core.SecurityContext;
 import org.openapi.quarkus.iot_processor_api_yaml.model.Room;
+import org.openapi.quarkus.iot_processor_api_yaml.model.RoomSmartObject;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +29,8 @@ public class RoomService {
 
         final Principal userPrincipal = securityContext.getUserPrincipal();
         final String roomOwnerUsername = userPrincipal.getName();
-        final RoomEntity roomEntity = RoomEntity.createRoom(roomOwnerUsername);
+        final String roomName = room.getName();
+        final RoomEntity roomEntity = RoomEntity.createRoom(roomOwnerUsername, roomName);
         final String createdRoomId = String.valueOf(roomEntity.id);
         subscribeToRoom(createdRoomId);
 
@@ -48,9 +52,32 @@ public class RoomService {
     }
 
     public List<Room> getRoomsByOwnerUsername(String roomOwnerUsername) {
+        assertUsernameMatchSecurityContext(roomOwnerUsername);
+
         final List<RoomEntity> roomEntities = RoomEntity.findRoomsByOwnerUsername(roomOwnerUsername);
         return roomEntities.stream()
             .map(roomMapper::toRoomApi)
             .toList();
+    }
+
+    public RoomSmartObject createRoomSmartObject(final String roomName, final RoomSmartObject roomSmartObject) {
+        final String roomOwnerUsername = roomSmartObject.getRoomOwnerUsername();
+        assertUsernameMatchSecurityContext(roomSmartObject.getRoomOwnerUsername());
+
+        final RoomEntity.RoomSmartObjectEntity roomSmartObjectEntity = RoomEntity.createRoomSmartObject(
+            roomName,
+            roomOwnerUsername,
+            roomSmartObject.getName()
+        );
+
+        return roomMapper.toRoomSmartObjectApi(roomSmartObjectEntity)
+            .roomOwnerUsername(roomOwnerUsername);
+    }
+
+    private void assertUsernameMatchSecurityContext(final String roomOwnerUsername) {
+        final Principal userPrincipal = securityContext.getUserPrincipal();
+        if (!Objects.equals(userPrincipal.getName(), roomOwnerUsername)) {
+            throw new ForbiddenException();
+        }
     }
 }
