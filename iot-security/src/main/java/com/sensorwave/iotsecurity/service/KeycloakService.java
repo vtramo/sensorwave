@@ -1,11 +1,14 @@
 package com.sensorwave.iotsecurity.service;
 
+import com.sensorwave.iotsecurity.service.exceptions.KeycloakAdminTokenGenerationException;
+import com.sensorwave.iotsecurity.service.exceptions.KeycloakUserCreationException;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import com.sensorwave.iotsecurity.config.KeycloakConfig;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 import org.openapi.quarkus.keycloak_api_yaml.api.KeycloakClientAccessTokenApi;
 import org.openapi.quarkus.keycloak_api_yaml.api.KeycloakUsersApi;
 import org.openapi.quarkus.keycloak_api_yaml.model.ClientAccessToken;
@@ -49,6 +52,8 @@ class KeycloakService {
             final String[] splittedURL = userLocation.split("/");
             final String createdUserId = splittedURL[splittedURL.length - 1];
             return createdUserId;
+        } catch (ClientWebApplicationException e) {
+            throw new KeycloakUserCreationException(e, userRepresentation);
         }
     }
 
@@ -68,6 +73,8 @@ class KeycloakService {
         try (final Response response = keycloakClientAccessTokenApi.generateClientAccessToken(clientCredentials, keycloakConfig.realm())) {
             final ClientAccessToken clientAccessToken = response.readEntity(ClientAccessToken.class);
             return clientAccessToken.getAccessToken();
+        } catch (ClientWebApplicationException e) {
+            throw new KeycloakAdminTokenGenerationException(e);
         }
     }
 }
