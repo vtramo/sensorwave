@@ -1,0 +1,46 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="vtramo">
+        <validCheckSum>8:8a1491c81003e4b3e282a45f102c908c</validCheckSum>
+        <ext:createCollection collectionName="rooms"/>
+
+        <ext:createIndex collectionName="rooms">
+            <ext:keys>{ ownerUsername: 1 }</ext:keys>
+            <ext:options>{ name: "ownerUsernameIndex" }</ext:options>
+        </ext:createIndex>
+
+        <ext:createIndex collectionName="rooms">
+            <ext:keys>
+            {
+                ownerUsername: 1,
+                name: 1
+            }
+            </ext:keys>
+            <ext:options>
+            {
+                name: "ownerUsernameAndNameIndex",
+                unique: true
+            }
+            </ext:options>
+        </ext:createIndex>
+
+<!--        <ext:createCollection collectionName="smartobjectmessages">
+            <ext:options>
+            {
+                timeseries: {
+                    timeField: "timestamp",
+                    metaField: "metadata",
+                    granularity: "seconds"
+                }
+            }
+            </ext:options>
+        </ext:createCollection>
+        <ext:createCollection collectionName="a"/>-->
+    </changeSet>
+</databaseChangeLog>
