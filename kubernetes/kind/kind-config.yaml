@@ -1,0 +1,53 @@
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/certs.d"
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: $KEYCLOAK_HOST_ABS_PATH
+        containerPath: /keycloak
+        propagation: Bidirectional
+      - hostPath: $MOSQUITTO_HOST_ABS_PATH
+        containerPath: /mosquitto
+        propagation: Bidirectional
+      - hostPath: $MONGODB_HOST_ABS_PATH
+        containerPath: /mongodb-data
+        propagation: Bidirectional
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+  - role: worker
+    extraMounts:
+      - hostPath: $KEYCLOAK_HOST_ABS_PATH
+        containerPath: /keycloak
+        propagation: Bidirectional
+      - hostPath: $MOSQUITTO_HOST_ABS_PATH
+        containerPath: /mosquitto
+        propagation: Bidirectional
+      - hostPath: $MONGODB_HOST_ABS_PATH
+        containerPath: /mongodb-data
+        propagation: Bidirectional
+  - role: worker
+    extraMounts:
+      - hostPath: $KEYCLOAK_HOST_ABS_PATH
+        containerPath: /keycloak
+        propagation: Bidirectional
+      - hostPath: $MOSQUITTO_HOST_ABS_PATH
+        containerPath: /mosquitto
+        propagation: Bidirectional
+      - hostPath: $MONGODB_HOST_ABS_PATH
+        containerPath: /mongodb-data
+        propagation: Bidirectional
