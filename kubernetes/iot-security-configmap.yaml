@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iot-security-configmap
+  labels:
+    app: iot-security
+data:
+  QUARKUS_HTTP_PORT: "8092"
+  QUARKUS_HTTP_AUTH_PROACTIVE: "false"
+  QUARKUS_HTTP_ROOT_PATH: "/api/iot-security"
+  QUARKUS_SMALLRYE_HEALTH_READINESS_PATH: "/api/iot-security/q/health/ready"
+  QUARKUS_SMALLRYE_HEALTH_LIVENESS_PATH: "/api/iot-security/q/health/live"
+  MQTT_BROKER_HOST: "mosquitto"
+  MQTT_BROKER_PORT: "1883"
+  MQTT_CLIENT_ID: "iot-security"
+  MQTT_CLIENT_USERNAME: "admin-user"
+  MQTT_CLIENT_PASSWORD: "123qweasd33"
+  MQTT_CLIENT_MAX-INFLIGHT-QUEUE: "500"
+  MQTT_CLIENT_CLEAN-SESSION: "false"
+  KEYCLOAK_APP_ADMIN_CLI_ID: "admin-cli"
+  KEYCLOAK_APP_ADMIN_CLI_SECRET: "sO1nByLT9BKXaSZN3aIkG2sOGwJgiExF"
+  KEYCLOAK_APP_HOST: "keycloak"
+  KEYCLOAK_APP_PORT: "8080"
+  KEYCLOAK_APP_REALM: "app"
+  QUARKUS_LOG_MIN_LEVEL: "DEBUG"
+  QUARKUS_LOG_CATEGORY_IO_QUARKUS_OIDC_LEVEL: "DEBUG"
+
+  
