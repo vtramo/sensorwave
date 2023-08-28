@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/ErrorResponse'
   /rooms/{roomOwnerUsername}:
     get:
       operationId: getRoomsByOwnerUsername
@@ -59,7 +59,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -69,20 +69,43 @@ components:
         id:
           type: string
           #readOnly: true
+        name:
+          type: string
         roomOwnerUsername:
           type: string
           #readOnly: true
+        smartObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoomSmartObject'
         createdAt:
           type: string
           format: date-time
           description: Creation date
           #readOnly: true
-    Error:
+    RoomSmartObject:
       type: object
       properties:
+        id:
+          type: string
+          #readOnly: true
+        name:
+          type: string
+        roomOwnerUsername:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation date
+          #readOnly: true
+    ErrorResponse:
+      type: object
+      properties:
+        title:
+          type: string
+        message:
+          type: string
         status:
           type: integer
         code:
-          type: integer
-        message:
           type: string

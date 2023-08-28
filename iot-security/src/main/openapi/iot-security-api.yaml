@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -44,12 +44,14 @@ components:
         password:
           type: string
           writeOnly: true
-    Error:
+    ErrorResponse:
       type: object
       properties:
+        title:
+          type: string
+        message:
+          type: string
         status:
           type: integer
         code:
-          type: integer
-        message:
           type: string
