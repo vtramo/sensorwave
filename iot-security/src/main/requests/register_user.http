@@ -1,5 +1,0 @@
-POST http://localhost:8092/users/register
-Content-Type: application/x-www-form-urlencoded
-
-username = vtramo3 &
-password = ciao
