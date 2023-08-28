@@ -1,9 +1,9 @@
 package com.sensorwave.iotsecurity.service;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import com.sensorwave.iotsecurity.config.KeycloakConfig;
 import com.sensorwave.iotsecurity.service.mqtt.MQTTSecurityService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.openapi.quarkus.iot_security_api_yaml.model.User;
 
 import java.util.concurrent.ExecutionException;
