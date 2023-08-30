@@ -103,13 +103,19 @@ public class MQTTRoomService extends MQTTAbstractService {
     public CompletableFuture<Boolean> subscribeToRoom(final String roomId) {
         final CompletableFuture<Boolean> successfullySubscribedFuture = new CompletableFuture<>();
 
+        final String topic = String.format("room/%s/#", roomId);
         mqttClient.subscribe(
-            "room/" + roomId + "/#",
+            topic,
             MqttQoS.AT_LEAST_ONCE.value(),
             subAckReturnCodeAsync -> {
                 final int subAckReturnCode = subAckReturnCodeAsync.result();
                 final boolean successfullySubscribed = (subAckReturnCode == MqttQoS.AT_LEAST_ONCE.value());
                 successfullySubscribedFuture.complete(successfullySubscribed);
+                Log.infof("Subscription to %s: %s. Code: %s.",
+                    topic,
+                    successfullySubscribed,
+                    subAckReturnCode
+                );
             }
         );
 
