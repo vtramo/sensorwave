@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 @ApplicationScoped
 public class MQTTRoomService extends MQTTAbstractService {
 
-    final String topicRoomPattern = "room/(\\d+)/smartobject/\\d+/(message|status)";
+    final String topicRoomPattern = "room/[^/]+/smartobject/[^/]+/(message|status)";
 
     @GraphQLClient(GeocoderServiceClientConfig.NAME)
     GeocoderGraphQLClient geocoderGraphQLClient;

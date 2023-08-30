@@ -7,7 +7,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <changeSet id="1" author="vtramo">
-        <validCheckSum>8:8a1491c81003e4b3e282a45f102c908c</validCheckSum>
+        <validCheckSum>8:1769651f62abb6a4858bd929c9c5679b</validCheckSum>
         <ext:createCollection collectionName="rooms"/>
 
         <ext:createIndex collectionName="rooms">
@@ -30,7 +30,7 @@
             </ext:options>
         </ext:createIndex>
 
-<!--        <ext:createCollection collectionName="smartobjectmessages">
+        <ext:createCollection collectionName="smartobject-messages">
             <ext:options>
             {
                 timeseries: {
@@ -41,6 +41,5 @@
             }
             </ext:options>
         </ext:createCollection>
-        <ext:createCollection collectionName="a"/>-->
     </changeSet>
 </databaseChangeLog>
