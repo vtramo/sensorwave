@@ -1,5 +1,8 @@
 package com.sensorwave.iotprocessor.service;
 
+import com.google.protobuf.Any;
+import com.google.protobuf.Timestamp;
+import com.sensorwave.iotprocessor.*;
 import com.sensorwave.iotprocessor.clients.GeocoderGraphQLClient;
 import com.sensorwave.iotprocessor.clients.ReverseGeocodingResult;
 import com.sensorwave.iotprocessor.config.GeocoderServiceClientConfig;
@@ -9,9 +12,11 @@ import com.sensorwave.iotprocessor.service.exceptions.InvalidTopicNameException;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.quarkus.logging.Log;
 import io.smallrye.graphql.client.GraphQLClient;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.mqtt.messages.MqttConnAckMessage;
 import io.vertx.mqtt.messages.MqttPublishMessage;
 import jakarta.enterprise.context.ApplicationScoped;
+import lombok.SneakyThrows;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -31,6 +36,7 @@ public class MQTTRoomService extends MQTTAbstractService {
         super.handleMqttConnAckMessage(mqttConnAckMessage);
     }
 
+    @SneakyThrows
     @Override
     void handleMqttPublishMessage(final MqttPublishMessage mqttPublishMessage) {
         super.handleMqttPublishMessage(mqttPublishMessage);
@@ -43,6 +49,22 @@ public class MQTTRoomService extends MQTTAbstractService {
         final String roomId = extractRoomIdFromTopicName(topicName);
         final String smartObjectId = extractSmartObjectIdFromTopicName(topicName);
         unsubscribeToRoomIfDeleted(roomId);
+
+        final Buffer payload = mqttPublishMessage.payload();
+        final byte[] bytes = payload.getBytes();
+        final SmartObjectMessage smartObjectMessage = SmartObjectMessage.parseFrom(bytes);
+        final Timestamp timestamp = smartObjectMessage.getTimestamp();
+        Log.infof("%s timestamp: %s", smartObjectId, timestamp);
+        for (final Data data: smartObjectMessage.getDataList()) {
+            final Any anyData = data.getData();
+            switch (data.getType()) {
+                case STATUS -> Log.infof("%s STATUS message: %s", smartObjectId, anyData.unpack(Status.class));
+                case POSITION -> Log.infof("%s POSITION message: %s", smartObjectId, anyData.unpack(Position.class));
+                case HUMIDITY -> Log.infof("%s HUMIDITY message: %s", smartObjectId, anyData.unpack(Humidity.class));
+                case TEMPERATURE -> Log.infof("%s TEMPERATURE message: %s", smartObjectId, anyData.unpack(Temperature.class));
+                case UNRECOGNIZED -> Log.warnf("%s UNRECOGNIZED message", smartObjectId);
+            }
+        }
 
         // TODO: Logic for parse messages (standard)
 /*        final Position position = Json.decodeValue(mqttPublishMessage.payload(), Position.class);
