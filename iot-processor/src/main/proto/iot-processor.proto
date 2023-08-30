@@ -1,30 +1,42 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "org.github.rmiot.model";
-option java_outer_classname = "TestProtos";
+option java_package = "com.sensorwave.iotprocessor";
+option java_outer_classname = "Protobuf";
 
 import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
 
 message SmartObjectMessage {
-  string timestamp = 1;
-  Data data = 2;
+  google.protobuf.Timestamp timestamp = 1;
+  repeated Data data = 2;
+}
+
+enum DataType {
+  TEMPERATURE = 0;
+  POSITION = 1;
+  HUMIDITY = 2;
+  STATUS = 3;
 }
 
 message Data {
-  string type = 1;
+  DataType type = 1;
   google.protobuf.Any data = 2;
 }
 
 message Temperature {
-  string value = 1;
+  double value = 1;
 }
 
 message Position {
-  string latitude = 1;
-  string longitude = 2;
+  double latitude = 1;
+  double longitude = 2;
 }
 
 message Humidity {
-  string value = 1;
+  double value = 1;
+}
+
+message Status {
+  bool isOnline = 1;
 }

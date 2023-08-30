@@ -1,5 +1,5 @@
-POST http://{{keycloak-host}}/api/iot-security/users/register
+POST http://{{iot-security-host}}/api/iot-security/users/register
 Content-Type: application/x-www-form-urlencoded
 
-username = vtramo16 &
+username = vtramo250 &
 password = ciao

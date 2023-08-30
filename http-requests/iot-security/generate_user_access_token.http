@@ -1,9 +1,9 @@
-POST http://{{keycloak-host}}/realms/app/protocol/openid-connect/token
+POST http://{{keycloak-host}}/realms/quarkus/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
-client_id = ext-client &
-client_secret = 28l5hqqBmi84WUQTD4XX0ABLrMhsReQy &
+client_id = dev-admin &
+client_secret = MixA18JzVpzriRFyYg5Uj1RI3lg4qRZe &
 grant_type = password &
-username = vtramo15 &
+username = vtramo250 &
 password = ciao &
 scope = openid
