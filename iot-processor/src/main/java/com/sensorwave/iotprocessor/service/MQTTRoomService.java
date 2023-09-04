@@ -1,21 +1,14 @@
 package com.sensorwave.iotprocessor.service;
 
-import com.google.protobuf.Any;
-import com.google.protobuf.Timestamp;
-import com.sensorwave.iotprocessor.*;
-import com.sensorwave.iotprocessor.clients.GeocoderGraphQLClient;
-import com.sensorwave.iotprocessor.clients.ReverseGeocodingResult;
-import com.sensorwave.iotprocessor.config.GeocoderServiceClientConfig;
 import com.sensorwave.iotprocessor.entity.RoomEntity;
-import com.sensorwave.iotprocessor.interceptor.LoggedRoomSubscription;
+import com.sensorwave.iotprocessor.interceptor.LoggedSubscription;
 import com.sensorwave.iotprocessor.service.exceptions.InvalidTopicNameException;
 import io.netty.handler.codec.mqtt.MqttQoS;
-import io.quarkus.logging.Log;
-import io.smallrye.graphql.client.GraphQLClient;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.mqtt.messages.MqttConnAckMessage;
 import io.vertx.mqtt.messages.MqttPublishMessage;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 
 import java.util.Optional;
@@ -26,10 +19,10 @@ import java.util.regex.Pattern;
 @ApplicationScoped
 public class MQTTRoomService extends MQTTAbstractService {
 
-    final String topicRoomPattern = "room/[^/]+/smartobject/[^/]+/(message|status)";
+    private static final String topicRoomPattern = "room/[^/]+/smartobject/[^/]+/(message)";
 
-    @GraphQLClient(GeocoderServiceClientConfig.NAME)
-    GeocoderGraphQLClient geocoderGraphQLClient;
+    @Inject
+    SmartObjectMessageProcessor smartObjectMessageProcessor;
 
     @Override
     void handleMqttConnAckMessage(final MqttConnAckMessage mqttConnAckMessage) {
@@ -48,29 +41,11 @@ public class MQTTRoomService extends MQTTAbstractService {
 
         final String roomId = extractRoomIdFromTopicName(topicName);
         final String smartObjectId = extractSmartObjectIdFromTopicName(topicName);
-        unsubscribeToRoomIfDeleted(roomId);
+        unsubscribeToRoomIfDeleted(roomId); // TODO: persistent session
 
         final Buffer payload = mqttPublishMessage.payload();
         final byte[] bytes = payload.getBytes();
-        final SmartObjectMessage smartObjectMessage = SmartObjectMessage.parseFrom(bytes);
-        final Timestamp timestamp = smartObjectMessage.getTimestamp();
-        Log.infof("%s timestamp: %s", smartObjectId, timestamp);
-        for (final Data data: smartObjectMessage.getDataList()) {
-            final Any anyData = data.getData();
-            switch (data.getType()) {
-                case STATUS -> Log.infof("%s STATUS message: %s", smartObjectId, anyData.unpack(Status.class));
-                case POSITION -> Log.infof("%s POSITION message: %s", smartObjectId, anyData.unpack(Position.class));
-                case HUMIDITY -> Log.infof("%s HUMIDITY message: %s", smartObjectId, anyData.unpack(Humidity.class));
-                case TEMPERATURE -> Log.infof("%s TEMPERATURE message: %s", smartObjectId, anyData.unpack(Temperature.class));
-                case UNRECOGNIZED -> Log.warnf("%s UNRECOGNIZED message", smartObjectId);
-            }
-        }
-
-        // TODO: Logic for parse messages (standard)
-/*        final Position position = Json.decodeValue(mqttPublishMessage.payload(), Position.class);
-        geocoderGraphQLClient.reverseGeocoding(position)
-            .subscribe()
-            .with(this::onReverseGeocodingResult);*/
+        smartObjectMessageProcessor.process(bytes);
     }
 
     private boolean isValidTopicName(final String topicName) {
@@ -83,7 +58,6 @@ public class MQTTRoomService extends MQTTAbstractService {
         final String[] tokens = topicName.split("/");
         return tokens[1];
     }
-
     private String extractSmartObjectIdFromTopicName(final String topicName) {
         final String[] tokens = topicName.split("/");
         return tokens[3];
@@ -95,30 +69,27 @@ public class MQTTRoomService extends MQTTAbstractService {
         mqttClient.unsubscribe("room/" + roomId + "/#");
     }
 
-    private void onReverseGeocodingResult(ReverseGeocodingResult reverseGeocodingResult) {
-        Log.info("Name: " + reverseGeocodingResult.getData().get(0).name);
-    }
-
-    @LoggedRoomSubscription
-    public CompletableFuture<Boolean> subscribeToRoom(final String roomId) {
+    public CompletableFuture<Boolean> subscribeToSmartObjectRoom(final String roomId, final String smartObjectId) {
         final CompletableFuture<Boolean> successfullySubscribedFuture = new CompletableFuture<>();
 
-        final String topic = String.format("room/%s/#", roomId);
+        final String smartObjectRoomTopic = buildSmartObjectRoomMessageTopic(roomId, smartObjectId);
+        subscribe(smartObjectRoomTopic).thenAccept(successfullySubscribedFuture::complete);
+
+        return successfullySubscribedFuture;
+    }
+
+    @LoggedSubscription
+    public CompletableFuture<Boolean> subscribe(final String topic) {
+        final CompletableFuture<Boolean> successfullySubscribedFuture = new CompletableFuture<>();
         mqttClient.subscribe(
             topic,
             MqttQoS.AT_LEAST_ONCE.value(),
-            subAckReturnCodeAsync -> {
-                final int subAckReturnCode = subAckReturnCodeAsync.result();
-                final boolean successfullySubscribed = (subAckReturnCode == MqttQoS.AT_LEAST_ONCE.value());
-                successfullySubscribedFuture.complete(successfullySubscribed);
-                Log.infof("Subscription to %s: %s. Code: %s.",
-                    topic,
-                    successfullySubscribed,
-                    subAckReturnCode
-                );
-            }
+            subAckReturnCodeAsync -> successfullySubscribedFuture.complete(true) // TODO: handle failure!
         );
-
         return successfullySubscribedFuture;
+    }
+
+    private static String buildSmartObjectRoomMessageTopic(final String roomId, final String smartObjectId) {
+        return String.format("room/%s/smartobject/%s/message", roomId, smartObjectId);
     }
 }

@@ -25,6 +25,10 @@ public abstract class MQTTAbstractService {
         connectToMqttBroker();
     }
 
+    public final boolean isConnected() {
+        return mqttClient.isConnected();
+    }
+
     private void connectToMqttBroker() {
         final String mqttBrokerHost = mqttBrokerConfig.host();
         final int mqttBrokerPort = mqttBrokerConfig.port();
@@ -32,10 +36,6 @@ public abstract class MQTTAbstractService {
         mqttClient.connect(mqttBrokerPort, mqttBrokerHost)
             .onSuccess(this::handleMqttConnAckMessage)
             .onFailure(this::handleConnectionToMqttBrokerFailed);
-    }
-
-    public final boolean isConnected() {
-        return mqttClient.isConnected();
     }
 
     void handleMqttConnAckMessage(final MqttConnAckMessage mqttConnAckMessage) {
@@ -49,6 +49,16 @@ public abstract class MQTTAbstractService {
         mqttClient.publishHandler(this::handleMqttPublishMessage);
     }
 
+    void handleMqttPublishMessage(final MqttPublishMessage mqttPublishMessage) {
+        final String topicName = mqttPublishMessage.topicName();
+        Log.infof("New message from topicName %s. QoS %s. Payload: %s. Properties: %s.",
+            topicName,
+            mqttPublishMessage.qosLevel(),
+            mqttPublishMessage.payload(),
+            mqttPublishMessage.properties().listAll()
+        );
+    }
+
     void handleConnectionToMqttBrokerFailed(final Throwable throwable) {
         Log.errorf(throwable, "Error connecting to MQTT broker %s:%d.",
             mqttBrokerConfig.host(),
@@ -58,15 +68,5 @@ public abstract class MQTTAbstractService {
         Log.info("I will try again to reconnect to the MQTT broker in 5 seconds...");
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.schedule(this::connectToMqttBroker, 5, TimeUnit.SECONDS);
-    }
-
-    void handleMqttPublishMessage(final MqttPublishMessage mqttPublishMessage) {
-        final String topicName = mqttPublishMessage.topicName();
-        Log.infof("New message from topicName %s. QoS %s. Payload: %s. Properties: %s.",
-            topicName,
-            mqttPublishMessage.qosLevel(),
-            mqttPublishMessage.payload(),
-            mqttPublishMessage.properties().listAll()
-        );
     }
 }
