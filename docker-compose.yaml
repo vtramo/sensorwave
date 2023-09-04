@@ -19,13 +19,12 @@ services:
     container_name: geocoder
 
   mosquitto:
-    image: eclipse-mosquitto:2.0.16
     container_name: mosquitto
     expose:
       - 1883
 
   mongodb:
-    image: mongo:4.4
+    image: mongo:5.0
     container_name: mongodb
     expose:
       - 27017
