@@ -10,7 +10,7 @@ import org.openapi.quarkus.iot_processor_api_yaml.model.RoomSmartObject;
 
 import static com.sensorwave.iotprocessor.entity.RoomEntity.*;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = "jakarta")
 public interface RoomMapper {
 
     @AfterMapping
