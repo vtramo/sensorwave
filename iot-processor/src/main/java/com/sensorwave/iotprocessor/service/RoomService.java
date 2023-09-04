@@ -1,6 +1,7 @@
 package com.sensorwave.iotprocessor.service;
 
 import com.sensorwave.iotprocessor.entity.RoomEntity;
+import com.sensorwave.iotprocessor.entity.SmartObjectMessageEntity;
 import com.sensorwave.iotprocessor.mapper.RoomMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -32,23 +33,8 @@ public class RoomService {
         final String roomName = room.getName();
         final RoomEntity roomEntity = RoomEntity.createRoom(roomOwnerUsername, roomName);
         final String createdRoomId = String.valueOf(roomEntity.id);
-        subscribeToRoom(createdRoomId);
 
         return roomMapper.toRoomApi(roomEntity);
-    }
-
-    private void subscribeToRoom(String createdRoomId) {
-        final Future<Boolean> successfullySubscribedFuture = mqttRoomService.subscribeToRoom(createdRoomId);
-        boolean successfullySubscribed = false;
-        try {
-            successfullySubscribed = successfullySubscribedFuture.get(1, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (!successfullySubscribed) {
-                RoomEntity.deleteById(createdRoomId);
-            }
-        }
     }
 
     public List<Room> getRoomsByOwnerUsername(String roomOwnerUsername) {
@@ -70,7 +56,14 @@ public class RoomService {
             roomSmartObject.getName()
         );
 
-        return roomMapper.toRoomSmartObjectApi(roomSmartObjectEntity)
+        final String roomId = RoomEntity
+            .findRoomByOwnerAndName(roomOwnerUsername, roomName)
+            .map(room -> room.id.toHexString())
+            .orElseThrow(RuntimeException::new);
+
+        mqttRoomService.subscribeToSmartObjectRoom(roomId, roomSmartObjectEntity.getId());
+        return roomMapper
+            .toRoomSmartObjectApi(roomSmartObjectEntity)
             .roomOwnerUsername(roomOwnerUsername);
     }
 
@@ -78,6 +71,20 @@ public class RoomService {
         final Principal userPrincipal = securityContext.getUserPrincipal();
         if (!Objects.equals(userPrincipal.getName(), roomOwnerUsername)) {
             throw new ForbiddenException();
+        }
+    }
+
+    private void subscribeToRoomSmartObject(final String roomId, final String smartObjectId) {
+        final Future<Boolean> successfullySubscribedFuture = mqttRoomService.subscribeToSmartObjectRoom(roomId, smartObjectId);
+        boolean successfullySubscribed = false;
+        try {
+            successfullySubscribed = successfullySubscribedFuture.get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (!successfullySubscribed) {
+                SmartObjectMessageEntity.deleteById(smartObjectId);
+            }
         }
     }
 }
