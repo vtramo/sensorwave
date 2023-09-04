@@ -60,11 +60,13 @@ services:
       api.positionstack.access-key: 6ba5121932055a90d8c8e7cccce1d550
 
   mosquitto:
+    build:
+      dockerfile: Dockerfile
+      context: mosquitto
     ports:
       - "1884:1883"
     volumes:
       - "./mosquitto/log:/mosquitto/log"
-      - "./mosquitto/config:/mosquitto/config"
 
   mongodb:
     ports:
