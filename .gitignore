@@ -44,3 +44,10 @@ nb-configuration.xml
 
 mosquitto/log/mosquitto.log
 kubernetes/kind/mongodb-data
+/scripts/python/include/
+/scripts/python/lib/
+/scripts/python/lib64/
+/scripts/python/lib64/
+/scripts/python/iot_processor_pb2.py
+/scripts/python/pyvenv.cfg
+/scripts/python/lib64/
