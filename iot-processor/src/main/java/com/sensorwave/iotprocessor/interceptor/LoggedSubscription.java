@@ -11,5 +11,5 @@ import jakarta.interceptor.InterceptorBinding;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR})
 @Inherited
-public @interface LoggedRoomSubscription {
+public @interface LoggedSubscription {
 }

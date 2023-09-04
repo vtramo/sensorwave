@@ -6,16 +6,16 @@ import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 
-@LoggedRoomSubscription
+@LoggedSubscription
 @Priority(2020)
 @Interceptor
-public class RoomSubscriptionInterceptor {
+public class SubscriptionLoggerInterceptor {
 
     @AroundInvoke
     Object logInvocation(InvocationContext context) throws Exception {
         final Object[] parameters = context.getParameters();
-        final String roomId = (String) parameters[0];
-        Log.info("Subscribing to room " + roomId);
+        final String topic = (String) parameters[0];
+        Log.info("Subscribing to topic " + topic);
         Object ret = context.proceed();
         return ret;
     }
