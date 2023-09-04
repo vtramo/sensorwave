@@ -1,5 +1,6 @@
 package com.sensorwave.iotprocessor.entity;
 
+import com.sensorwave.iotprocessor.service.sensordata.SensorData;
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class SmartObjectMessageEntity extends PanacheMongoEntity {
 
     private Instant timestamp;
     private SmartObjectMessageMetadata metadata;
-    private List<Data> data;
+    private List<SensorData> data;
 
     @Getter
     @Setter
@@ -23,11 +24,4 @@ public class SmartObjectMessageEntity extends PanacheMongoEntity {
         private String roomId;
         private String smartObjectId;
     }
-
-    public sealed interface Data permits TemperatureData, PositionData, HumidityData, StatusData { }
-
-    public record TemperatureData(double temperature) implements Data { }
-    public record PositionData(double latitude, double longitude) implements Data { }
-    public record HumidityData(double temperature) implements Data { }
-    public record StatusData(boolean isOnline) implements Data { }
 }
