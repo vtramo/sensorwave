@@ -60,7 +60,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
+  /rooms/{roomName}/smartobjects:
+    post:
+      operationId: createRoomSmartObject
+      tags:
+        - Rooms
+      summary: Create a smart object
+      parameters:
+        - in: path
+          name: roomName
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomSmartObject'
+      responses:
+        201:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomSmartObject'
 components:
   schemas:
     Room:
