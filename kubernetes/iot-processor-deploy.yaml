@@ -24,7 +24,6 @@ spec:
       containers:
       - name: iot-processor
         image: localhost:5000/sensorwave/iot-processor:latest
-        imagePullPolicy: Always
         ports:
           - containerPort: 8090
             name: http
