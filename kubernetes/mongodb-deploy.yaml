@@ -19,7 +19,7 @@ spec:
           persistentVolumeClaim:
             claimName: mongodb-data
       containers:
-        - image: mongo:4.4
+        - image: mongo:5.0
           name: mongodb
           volumeMounts:
             - mountPath: /data/db
