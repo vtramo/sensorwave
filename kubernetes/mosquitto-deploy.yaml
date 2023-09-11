@@ -14,21 +14,21 @@ spec:
       labels:
         app: mosquitto
     spec:
-      volumes:
-        - name: mosquitto-config-volume
-          hostPath:
-            path: /mosquitto
-            type: Directory
+#      volumes:
+#        - name: mosquitto-config-volume
+#          hostPath:
+#            path: /mosquitto
+#            type: Directory
       containers:
-      - image: eclipse-mosquitto:2.0.16
-        name: eclipse-mosquitto
-        volumeMounts:
-          - mountPath: /mosquitto/config
-            name: mosquitto-config-volume
-            subPath: ./config
-          - mountPath: /mosquitto/log
-            name: mosquitto-config-volume
-            subPath: ./log
+      - image: localhost:5000/sensorwave/mosquitto:latest
+        name: mosquitto
+#        volumeMounts:
+#          - mountPath: /mosquitto/config
+#            name: mosquitto-config-volume
+#            subPath: ./config
+#          - mountPath: /mosquitto/log
+#            name: mosquitto-config-volume
+#            subPath: ./log
 #        readinessProbe:
 #          exec:
 #            command:
