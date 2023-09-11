@@ -6,8 +6,10 @@ spec:
   selector:
     app: mosquitto
   ports:
-    - protocol: TCP
+    - name: mqtt
+      protocol: TCP
       port: 1883
+      nodePort: 31883
       targetPort: 1883
-  type: ClusterIP
+  type: NodePort
   
